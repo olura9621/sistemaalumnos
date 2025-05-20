@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta tus Notas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Consulta tus notas 🎓</h1>
+        <form id="form-consulta">
+            <input type="text" id="codigo" placeholder="Ingresa tu código (ej: A1B2C3)" required>
+            <button type="submit">Buscar</button>
+        </form>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('form-consulta').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const codigo = document.getElementById('codigo').value.toUpperCase();
+            const alumnos = JSON.parse(localStorage.getItem('alumnos')) || [];
+            const alumno = alumnos.find(a => a.codigo === codigo);
+            const resultado = document.getElementById('resultado');
+
+            if (alumno) {
+                resultado.innerHTML = `
+                    <div class="resultado-card">
+                        <h3>${alumno.nombre}</h3>
+                        <p>Calificación: ${alumno.calificacion}</p>
+                        <p>Inasistencias: ${alumno.inasistencias}</p>
+                    </div>
+                `;
+            } else {
+                resultado.innerHTML = '<p class="error">❌ Código no encontrado</p>';
+            }
+        });
+    </script>
+</body>
+</html>

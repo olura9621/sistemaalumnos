@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Profe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>¡ESPAÑOL TÉC 5! 👨🏫</h1>
+        <h2>Registra a tus alumnos:</h2>
+        
+        <form id="form-alumno">
+            <input type="text" id="nombre" placeholder="Nombre del alumno" required>
+            <input type="number" id="calificacion" placeholder="Calificación (0-10)" min="0" max="10">
+            <input type="number" id="inasistencias" placeholder="Inasistencias" min="0">
+            <button type="submit">Guardar</button>
+        </form>
+
+        <h3>Alumnos registrados:</h3>
+        <div id="lista-alumnos"></div>
+    </div>
+
+    <script>
+        // Generar código aleatorio (ej: "A1B2C3")
+        function generarCodigo() {
+            const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numeros = '0123456789';
+            let codigo = '';
+            for (let i = 0; i < 3; i++) {
+                codigo += letras.charAt(Math.floor(Math.random() * letras.length));
+                codigo += numeros.charAt(Math.floor(Math.random() * numeros.length));
+            }
+            return codigo;
+        }
+
+        // Guardar alumno en localStorage
+        document.getElementById('form-alumno').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const calificacion = document.getElementById('calificacion').value || 'N/A';
+            const inasistencias = document.getElementById('inasistencias').value || '0';
+            const codigo = generarCodigo();
+
+            // Obtener alumnos existentes o crear array vacío
+            const alumnos = JSON.parse(localStorage.getItem('alumnos')) || [];
+            
+            // Agregar nuevo alumno
+            alumnos.push({
+                nombre,
+                codigo,
+                calificacion,
+                inasistencias
+            });
+
+            // Guardar en localStorage
+            localStorage.setItem('alumnos', JSON.stringify(alumnos));
+
+            // Mostrar código al profesor
+            alert(`Alumno registrado. Código: ${codigo}`);
+
+            // Actualizar lista
+            mostrarAlumnos();
+            this.reset();
+        });
+
+        // Mostrar alumnos registrados
+        function mostrarAlumnos() {
+            const alumnos = JSON.parse(localStorage.getItem('alumnos')) || [];
+            const lista = document.getElementById('lista-alumnos');
+            lista.innerHTML = '';
+            
+            alumnos.forEach(alumno => {
+                lista.innerHTML += `
+                    <div class="alumno-card">
+                        <p><strong>${alumno.nombre}</strong></p>
+                        <p>Código: ${alumno.codigo}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Cargar lista al iniciar
+        mostrarAlumnos();
+    </script>
+</body>
+</html>
